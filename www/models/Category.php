@@ -9,7 +9,7 @@ class Category extends ActiveRecord
 {
 
     const NUMBER_CATEGORIES = 10;
-    
+
     public static function tableName()
     {
         return 'category';

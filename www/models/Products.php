@@ -10,6 +10,8 @@ class Products extends ActiveRecord
 
     const NUMBER_ITEMS = 100;
 
+    const NUMBER_IN_MAIN_PAGE = 6;
+
     public static function tableName()
     {
         return 'products';

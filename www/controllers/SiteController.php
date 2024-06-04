@@ -36,10 +36,26 @@ class SiteController extends Controller
             ->limit($paginationCategory->limit)
             ->all();
 
+        $obItems = new Products();
+        $arItems = $obItems::find();
+
+        $paginationItems = new Pagination([
+            'defaultPageSize' => 6,
+            'totalCount' => $arItems->count()
+        ]);
+
+        $renderItems = $arItems->orderBy('title')
+            ->offset($paginationItems->offset)
+            ->limit($paginationItems->limit)
+            ->all();
+        
         return $this->render('index', [
+            'categoriesCount' => $categories->count(),
             'categories' => $categories->all(),
-            'category' => $category,
             'renderCategories' => $renderCategories,
+            'itemsCount' => $arItems->count(),
+            'items' => $arItems->all(),
+            'renderItems' => $renderItems
         ]);
     }
     

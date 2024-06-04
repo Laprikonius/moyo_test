@@ -11,7 +11,7 @@ $this->title = 'Moyo test';
         <div class="jumbotron text-center bg-transparent mt-5 mb-5">
             <h1 class="display-4">Moyo test</h1>
 
-            <h2>Категории</h2>
+            <h2>Категории <?= $categoriesCount ?></h2>
         </div>
 
         <div class="container">
@@ -35,18 +35,21 @@ $this->title = 'Moyo test';
 
         <div class="container">
             <div class="jumbotron text-center bg-transparent mt-5 mb-5">
-                <h2>Товары</h2>
+                <h2>Товары <?= $itemsCount ?> </h2>
             </div>
 
             <div class="row">
-                <div class="col-lg-4 mb-3">
-                    <h2>Heading</h2>
-                    <?= Html::a('Товар', ['/category/item', 'id' => 1], $options = ['class' => 'item_link']) ?>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                        dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                        ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                        fugiat nulla pariatur.</p>
-                </div>
+                <?php
+                foreach ($renderItems as $key => $item) {
+                    ?>
+                    <div class="col-lg-4 mb-3">
+                    <h2><?= $item->title . ': id: ' . $item->id ?></h2>
+                        <?= Html::a($item->title, ['item-view', 'id' => $item->id], $options = ['class' => 'item_link']) ?>
+                        <p><?= $item->description ?></p>
+                    </div>
+                    <?
+                }
+                ?>
             </div>
         </div>
 
