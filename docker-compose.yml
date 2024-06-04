@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+
+  nginx-yii-moyo-service:
+    image: nginx:stable-alpine
+    container_name: nginx-yii-moyo-container
+    restart: always
+    volumes:
+      - ./www:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "83:80"
+    depends_on:
+      - php_fpm-yii-moyo-service
+      - mysql-yii-moyo-service
+    networks:
+      - yii_moyo_network
+
+  php_fpm-yii-moyo-service:
+    build:
+      context: .
+      dockerfile: ./php-fpm/Dockerfile
+    container_name: php_fpm-yii-moyo-container
+    volumes:
+      - ./www:/var/www/html
+    networks:
+      - yii_moyo_network
+
+  mysql-yii-moyo-service:
+    image: mysql:latest
+    container_name: mysql-yii-moyo-container
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: app_yii_moyo
+      MYSQL_USER: user
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: user
+    ports:
+      - "3309:3306"
+    networks:
+      - yii_moyo_network
+
+  rabbitmq-yii-moyo-service:
+    image: rabbitmq:3.13.3-management
+    container_name: rabbitmq-yii-moyo-container
+    environment:
+      RABBITMQ_DEFAULT_USER: "root"
+      RABBITMQ_DEFAULT_PASS: "root"
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    networks:
+      - yii_moyo_network
+
+  phpmyadmin-yii-moyo-service:
+    image: phpmyadmin
+    container_name: phpmyadmin-yii-moyo-container
+    environment:
+      PMA_HOST: mysql-yii-moyo-container
+    ports:
+      - "1703:80"
+    networks:
+      - yii_moyo_network
+
+networks:
+  yii_moyo_network:
