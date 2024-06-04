@@ -21,11 +21,11 @@ $this->title = 'Moyo test';
                     //$options = ['class' => 'category_link'];
                     ?>
                     <div class="col-lg-4 mb-3">
-                        <h2><?= Html::a($category->title, ['category-view', 'id' => $category->id], $options = ['class' => 'btn btn-link']) ?></h2>
-                        <?= Html::a($category->title, ['category-view', 'id' => $category->id], $options = ['class' => 'btn btn-link']) ?>
+                        <h2><?= Html::a($category->title, ['category-view', 'id' => $category->id], $options = ['class' => 'btn btn-link']) . ' id: ' . $category->id ?></h2>
+                        <?= Html::a($category->title, ['category-view', 'id' => $category->id], $options = ['class' => 'btn btn-link']). ' id: ' . $category->id  ?>
                         <a href=""><?= Html::img('/img/empty.png', ['class' => 'category_img']) ?></a>
-                        <p><?= $category->description ?></p>
-                        <?= Html::a($category->title, ['category-view', 'id' => $category->id], $options = ['class' => 'btn btn-link']) ?>
+                        <p><?= $category->description . ' id: ' . $category->id ?></p>
+                        <?= Html::a($category->title, ['category-view', 'id' => $category->id], $options = ['class' => 'btn btn-link']) . ' id: ' . $category->id ?>
                     </div>
                     <?
                 }
