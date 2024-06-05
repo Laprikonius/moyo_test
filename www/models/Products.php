@@ -26,7 +26,11 @@ class Products extends ActiveRecord
         int $quantity,
         $created_at = '',
         $updated_at = '',
-        string $image)
+        string $image,
+        int $category_id,
+        string $name,
+        int $inStock,
+        int $inEnding)
     {
         $product = new Products();
         $product->title = $title;
@@ -37,7 +41,46 @@ class Products extends ActiveRecord
         $product->created_at = $created_at;
         $product->updated_at = $updated_at;
         $product->image = $image;
+        $product->category_id = $category_id;
+        $product->name = $name;
+        $product->inStock = $inStock;
+        $product->inEnding = $inEnding;
         $product->save();
+
+        $savedItemID = $product->getPrimaryKey();
+        if ($savedItemID > 0)
+        {
+            $randItemImages = mt_rand(0, 3);
+            if ($randItemImages > 0)
+            {
+                $i = 0;
+                $imagePosition = 0;
+                while ($randItemImages > $i)
+                {
+                    $randImage = mt_rand(0, 2);
+                    $obRandImage = '';
+                    if ($randImage > 0) {
+                        $obRandImage = Images::ARRAY_IMAGES[$randImage];
+                        $producImages = new Images();
+                        $producImages->position = $imagePosition;
+                        $producImages->filename = $obRandImage;
+                        $producImages->url = $obRandImage;
+                        $producImages->item_id_image = $savedItemID;
+                        $producImages->save();
+                        if ($imagePosition == 0)
+                        {
+                            $productAddMainImage = $product::findOne([
+                                'id' => $savedItemID
+                            ]);
+                            $productAddMainImage->image = $obRandImage;
+                            $productAddMainImage->update();
+                        }
+                        $imagePosition++;
+                    }
+                    $i++;
+                }
+            }
+        }
 
         return $product;
     }

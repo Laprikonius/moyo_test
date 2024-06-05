@@ -44,6 +44,38 @@ use yii\helpers\Url;
         }
         ?>
 
+        <div class="container">
+            <div class="jumbotron text-center bg-transparent mt-5 mb-5">
+                <h2>Товары</h2>
+            </div>
+
+            <div class="row">
+                <?php
+                foreach ($categoryItems as $key => $item) {
+                    $itemID = $item->id;
+                    if (isset($obProductsImages[$itemID]))
+                    {
+                        $productImage = $obProductsImages[$itemID];
+                    } else {
+                        $productImage = '/img/empty.png';
+                    }
+                    ?>
+                    <div class="col-lg-4 mb-3 text-center">
+                        <div class="text-center"><?= Html::a($item->title . ', id: ' . $itemID, ['item-view', 'id' => $itemID], $options = ['class' => 'item_link']) ?></div>
+                        <?= Html::beginTag('a', ['class' => 'btn btn-link', 'href' => Url::to(['item-view', 'id' => $itemID])]) ?><?= Html::img($productImage, ['class' => 'category_img', 'height' => 270]) ?><?= Html::endTag('a') ?>
+                        <p class="mb-0"><?= $item->description ?></p>
+                        <p class="mb-0">Id: <?= $itemID ?></p>
+                        <p class="mb-0">categoryName: <?= $categoryName[$itemID] ?></p>
+                        <p class="mb-0">name: <?= $item->title ?></p>
+                        <p class="mb-0">price: <?= ($item->price_discount > 0) ? 'price_discount ' . $item->price_discount : (($item->price > 0) ? 'price ' . $item->price : 0) ?></p>
+                        <p class="mb-0">inStock: <?= ($item->quantity > 0 && ($item->price_discount > 0 || $item->price > 0)) ? 'true' : 'false' ?></p>
+                    </div>
+                    <?
+                }
+                ?>
+            </div>
+        </div>
+
     </div>
 
 </div>

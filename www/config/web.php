@@ -49,12 +49,6 @@ $config = [
             //'enableScriptParsing' => false,
             'rules' => [
                 'site/index' => '/',
-                //'site/migrate' => '/migrate',
-                [
-                    'pattern' => 'category-view/<id:\d+>',
-                    'route' => 'category/view',
-                    //'defaults' => ['id' => 1]
-                ]
             ],
         ],
         
