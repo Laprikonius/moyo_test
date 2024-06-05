@@ -15,7 +15,7 @@ $this->title = 'Генерация';
     <div class="body-content">
 
         <div class="row">
-            <div class="col-lg-4 mb-3">
+            <div class="col-lg-12 mb-3">
             <?= Html::a('Генерация категории', ['create-category'], ['class' => 'btn btn-success']) ?>
             <?= Html::a('Генерация товаров', ['create-items'], ['class' => 'btn btn-primary']) ?>
             </div>

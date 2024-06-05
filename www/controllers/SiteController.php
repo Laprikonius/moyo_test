@@ -6,8 +6,9 @@ use Yii;
 use yii\web\Controller;
 use app\models\Category;
 use app\models\Products;
-use yii\widgets\LinkPager;
+use app\models\Images;
 use yii\data\Pagination;
+use yii\helpers\Inflector;
 
 class SiteController extends Controller
 {
@@ -48,6 +49,19 @@ class SiteController extends Controller
             ->offset($paginationItems->offset)
             ->limit($paginationItems->limit)
             ->all();
+
+        $categoryImage = new Images();
+        $obImages = [];
+
+        foreach ($categories->all() as $category)
+        {
+            if ($category->image != '') {
+                $categoryImage = $categoryImage::find()->where([
+                    'category_id_image' => $category->id,
+                ])->one();
+                $obImages[$category->id] = $categoryImage->url;
+            }
+        }
         
         return $this->render('index', [
             'categoriesCount' => $categories->count(),
@@ -55,7 +69,8 @@ class SiteController extends Controller
             'renderCategories' => $renderCategories,
             'itemsCount' => $arItems->count(),
             'items' => $arItems->all(),
-            'renderItems' => $renderItems
+            'renderItems' => $renderItems,
+            'obImages' => $obImages
         ]);
     }
     
@@ -71,10 +86,45 @@ class SiteController extends Controller
         $categories = $category::find()->where([
             'id' => $id,
         ])->one();
-        //var_dump($categories);
+
+        $subcategories = '';
+
+        $categoryImage = new Images();
+        $obImages = [];
+
+        if ($categories->subcategory > 0) {
+            $subcategoryID = $categories->subcategory;
+            $subcategories = $category::find()->where(['id' => $subcategoryID])->all();
+            foreach ($subcategories as $category)
+            {
+                if ($category->image != '') {
+                    $categoryImage = $categoryImage::find()->where([
+                        'category_id_image' => $category->id,
+                    ])->one();
+                    $obImages[$category->id] = $categoryImage->url;
+                }
+            }
+        }
+        
         return $this->render('category-view', [
             'categoryView' => $categories,
             'categoryID' => $categoryID,
+            'subcategories' => $subcategories,
+            'obImages' => $obImages
+        ]);
+    }
+
+    public function actionItemView(int $id)
+    {
+        $itemID = $id;
+        $item = new Products();
+        $items = $item::find()->where([
+            'id' => $id,
+        ])->one();
+        
+        return $this->render('item-view', [
+            'itemView' => $items,
+            'itemID' => $itemID,
         ]);
     }
 
@@ -95,16 +145,48 @@ class SiteController extends Controller
         for ($i = 0; $i < $randNumber; $i++) {
             if ($count < $randNumber)
             {
+                $rand = mt_rand(0, 1);
+                $randImage = mt_rand(0, 2);
+                $obRandImage = '';
+                if ($randImage > 0) {
+                    $obRandImage = Images::ARRAY_IMAGES[$randImage];
+                    //
+
+                    //
+                }
                 $title = 'Категория ' . $i;
-                $name = 'Категория Code ' . $i;
+                $obName = preg_replace('|\s+|', ' ', strtolower($title));
+                $name = Inflector::transliterate(str_replace(' ', '-', $obName));
                 $desription = 'Категория desription ' . $i;
-                $image = 'Категория image ' . $i;
+                $image = $obRandImage;
                 $saveCategory = Category::saveCategory($title, $name, $desription, $image);
+                $savedCategoryID = $saveCategory->getPrimaryKey();
+                if ($savedCategoryID > 0 && $rand > 0)
+                {
+                    $addSubcategory = $startCreateCategories::findOne([
+                        'id' => $savedCategoryID
+                    ]);
+                    $randSubcategoryID = mt_rand(1, 10);
+                    $addSubcategory->subcategory = $randSubcategoryID;
+                    $addSubcategory->update();
+                }
+                if ($savedCategoryID > 0 && $randImage > 0)
+                {
+                    $categoryImage = new Images();
+                    $categoryImage->position = 0;
+                    $categoryImage->filename = $obRandImage;
+                    $categoryImage->url = $obRandImage;
+                    $categoryImage->category_id_image = $savedCategoryID;
+                    $categoryImage->save();
+                }
+                unset($savedCategoryID);
+                unset($randImage);
                 $startCreateCategoriesExist = '10 Категорий создано!';
             } else {
                 $allCatCreated = 'Все 10 категорий существуют, больше нельзя создать!';
             }
         };
+
         //end create categories
         return $this->render('create-category', [
             'allCatCreated' => $allCatCreated,

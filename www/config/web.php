@@ -42,14 +42,22 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+        
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            //'enableScriptParsing' => false,
             'rules' => [
+                'site/index' => '/',
+                //'site/migrate' => '/migrate',
+                [
+                    'pattern' => 'category-view/<id:\d+>',
+                    'route' => 'category/view',
+                    //'defaults' => ['id' => 1]
+                ]
             ],
         ],
-        */
+        
     ],
     'params' => $params,
 ];

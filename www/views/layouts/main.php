@@ -40,9 +40,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
         'items' => [
-            ['label' => 'Главная', 'url' => ['/site/index']],
-            ['label' => 'Каталог 1', 'url' => ['/site/category']],
-            ['label' => 'Каталог 2', 'url' => ['/site/category']],
+            ['label' => 'Главная', 'url' => ['/']],
+            ['label' => 'Каталог', 'url' => ['/site/category']],
             ['label' => 'Генерация', 'url' => ['/site/migrate']],
         ]
     ]);
